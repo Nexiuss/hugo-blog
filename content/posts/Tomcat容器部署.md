@@ -4,7 +4,7 @@ date: 2024-09-11T18:12:56+08:00
 description: "A blog post"
 image: "/path/to/image.png"
 type: "post"
-tags: ["blog"]
+tags: ["blog","tomcat","docker"]
 ---
 
 # Tomcat容器部署
