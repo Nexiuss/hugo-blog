@@ -9,4 +9,4 @@ git add .
 git commit -m "Auto Commit"
 
 # 推送代码到远端分支
-git push origin master
+git push origin main
