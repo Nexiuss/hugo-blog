@@ -4,7 +4,7 @@ date: 2024-10-11T15:39:32+08:00
 description: "A blog post"
 image: "/path/to/image.png"
 type: "post"
-tags: ["blog"]
+tags: ["blog","kotlin"]
 ---
 
 # Kotlin lambda表达式
