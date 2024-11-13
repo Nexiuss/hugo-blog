@@ -328,7 +328,19 @@ docker exec -it oracle19c sqlplus pdbadmin/<your password>@//localhost:1521/<You
 docker exec -it oracle19c sqlplus sys/password1234@//localhost:1521/orclcdb as sysdba
 docker exec -it oracle19c sqlplus system/password1234@//localhost:1521/orclcdb
 ```
+
+#### 切换PDB
+```SQL
+-- 查看当前PDB
+show con_name
+-- 查看所有PDB
+select name,open_mode from v$pdbs;
+-- 切换PDB
+alter session set container=ORCLPDB1;
+```
+
 #### 扩展 ：oracle实例 ORCLPDB1和orclcdb的区别
+oracle从12c开始增加了增加了CDB和PDB的概念，数据库引入的多租用户环境（Multitenant Environment）中，允许一个数据库容器（CDB）承载多个可插拔数据库（PDB）。CDB全称为Container Database，中文翻译为数据库容器，PDB全称为Pluggable Database，即可插拔数据库。在ORACLE 12C之前，实例与数据库是一对一或多对一关系（RAC）：即一个实例只能与一个数据库相关联，数据库可以被多个实例所加载。而实例与数据库不可能是一对多的关系。当进入ORACLE 12C后，实例与数据库可以是一对多的关系
 * jdbc:oracle:thin:@//xxx:1521/ORCLPDB1：此URL连接到名为“ORCLPDB1.在Oracle多租户体系结构中，容器数据库（CDB）可以托管多个PDB。PDB充当CDB内的单独数据库。当您想要直接连接到特定PDB时，将使用此URL
 * jdbc:oracle:thin:@//xxx:1521/ORCLCDB：此URL连接到容器数据库（CDB）本身，而不是特定的PDB。CDB是包含多个PDB的主数据库。当连接到CDB时，您可以访问和管理其中的所有PDB。此URL通常在需要执行管理任务或访问CDB级别的功能时使用。
 选择使用哪个URL取决于应用程序的要求：
