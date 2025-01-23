@@ -54,7 +54,7 @@ tags: ["blog","jdk15on","bcprov","国密"]
 
 #### 不希望打入项目的包可以scope配置为provided
 #### 项目打包完成后，可以使用带有Shaded BouncyCastle的jar包
-#### 补充：此方案由于是修改了jar包的，若使用 oracle-jdk 启动应用，会导致出现以下错误：
+#### **补充**：此方案由于是修改了jar包的，若使用 oracle-jdk 启动应用，会导致出现以下错误：
 ```
 Caused by: java.io.IOException: error constructing MAC: java.lang.SecurityException: JCE cannot authenticate the provider BC
 ```
