@@ -58,53 +58,63 @@ tags: ["blog","jdk15on","bcprov","国密"]
 ```
 Caused by: java.io.IOException: error constructing MAC: java.lang.SecurityException: JCE cannot authenticate the provider BC
 ```
-解决方式是使用非 oracle jdk，如 open jdk
+主要原因为：OracleJDK验证了加密签名，而打包的过程破坏了验证BC库的签名
+解决方式为：使用非 oracle jdk，如 open jdk
 
 ### 方案二：自己定义ClassLoad实现隔离
+大概思路：自定义类加载器的父加载器为应用加载器（如tomcat为tomcat 的类加载器，weblogic为weblogic的类加载器），
+自定义类加载器加载类的时候，如果在配置的 jar 列表内找了的类，则加载成功
+没找到则委托给 parent 去加载，parent 一般加载顺序是 先加载 jdk的类，再加载 ext 的再加载 jre/lib 下的，最后加载应用 classpath 的
 
 #### SdkClassLoader类
 ```java
 public class SdkClassLoader extends URLClassLoader {
 
     private final ClassLoader parent;
-    /* The search path for classes and resources */
-    private final URLClassPath ucp;
-
-    /* The context to be used when loading classes and resources */
-    private final AccessControlContext acc;
 
 
     public SdkClassLoader(URL[] urls, ClassLoader parent) {
         super(urls, parent);
         this.parent = parent;
-        this.acc = AccessController.getContext();
-        ucp = new URLClassPath(urls, acc);
+        System.out.printf("SdkClassLoader urls = %s%n", Arrays.toString(urls));
+        if (parent instanceof URLClassLoader){
+            System.out.printf("ParentClassLoader[%s] urls = %s%n", parent,Arrays.toString(((URLClassLoader) parent).getURLs()));
+        }else {
+            System.out.printf("ParentClassLoader[%s]", parent);
+        }
     }
-
     @Override
-    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-        // 尝试使用系统类加载器父类加载类（JDK类）
-        Class<?> c = getSystemClassLoader().getParent().loadClass(name);
-        if (c == null) {
-            // 如果未找到，则委托给父类加载器加载类
-            c = parent.loadClass(name);
+    protected Class<?> loadClass(String name, boolean resolve) {
+        synchronized (getClassLoadingLock(name)) {
+            // 首先，检查类是否已经被加载
+            Class<?> c = findLoadedClass(name);
+            if (c == null) {
+                try {
+                    // 尝试在当前类加载器中查找类
+                    c = findClass(name);
+                } catch (ClassNotFoundException e) {
+                    // doNothing
+                }
+                if(c == null){
+                    // 如果未找到，则委托给父类加载器加载类
+                    try {
+                        if (parent != null) {
+                            c = parent.loadClass(name);
+                            System.out.println("parent:["+name+"]");
+                        }
+                    } catch (ClassNotFoundException e) {
+                        System.out.printf("[%s] in parent is null %n",name);
+                        throw new RuntimeException(e);
+                    }
+                }else {
+                    System.out.printf("this:[%s]%n" , name);
+                }
+            }
+            if (resolve) {
+                resolveClass(c);
+            }
+            return c;
         }
-        if (resolve) {
-            resolveClass(c);
-        }
-        return c;
-    }
-
-    private static void printUrls(URL[] urLs) {
-        for (int i = 0; i < urLs.length ; i ++){
-            URL urL = urLs[i];
-            System.out.println("urL = " + urL.toExternalForm());
-        }
-    }
-
-    @Override
-    protected Class<?> findClass(String name) throws ClassNotFoundException {
-        // ...
     }
 }
 ```
@@ -112,12 +122,12 @@ public class SdkClassLoader extends URLClassLoader {
 #### 调用代码
 ```java
 URL[] urls = getLibUrls(System.getProperty("sdk-lib","path/to/lib"));
-SdkClassLoader sdkClassLoader = new SdkClassLoader(urls, ISpdbSdk.class.getClassLoader());
+SdkClassLoader sdkClassLoader = new SdkClassLoader(urls, ISdk.class.getClassLoader());
 
 Class<?> classes;
 try {
-    classes = Class.forName("com.djbx.spdb.sdk.SpdbSdkImpl", true, sdkClassLoader);
-    spdbSdk=(ISpdbSdk) classes.newInstance();
+    classes = Class.forName("xxx.xxx.iSdkImpl", true, sdkClassLoader);
+    iSdk=(ISdk) classes.newInstance();
 } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
     throw new RuntimeException(e);
 }
@@ -125,5 +135,5 @@ try {
 
 **注意事项**
 
-* 接口类需要在系统默认 classLoader 加载，其他类，包括实现类等需要在自定义类加载器中加载。
+* 接口类需要在系统默认 classLoader加载（通过 classLoader 的 parent 传进来），否则会提示强转失败，其他类，包括实现类等需要在自定义类加载器中加载。
 * 需要保证系统类加载器可以加载接口类。
