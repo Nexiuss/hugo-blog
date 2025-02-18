@@ -13,6 +13,9 @@ tags: ["blog","jdk15on","bcprov","国密"]
 背景：本地项目使用的 BouncyCastle 1.61 版本，但第三方 SDK 要求使用 1.70 版本，导致 jar 包冲突的问题。
 
 ### 方案一：使用Shade插件实现隔离
+1. 首先建立一个工具工程引入需要shade jar 包
+2. 配置 maven-shade插件，通过 pattern shadedPattern属性来配置要更改的包的名字
+3. 使用shade 后的jar包，import 更改后的包名字，若有反射调用，也反射更改后的包名字
 
 #### pom文件配置插件
 ```xml
