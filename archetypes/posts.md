@@ -2,7 +2,7 @@
 title: '{{ replace .File.ContentBaseName "-" " " | title }}'
 date: {{ .Date }}
 description: "A blog post"
-image: "/path/to/image.png"
+image: "/images/{{ now.Format "20060102150405" }}.png"
 type: "post"
 tags: ["blog"]
 ---
