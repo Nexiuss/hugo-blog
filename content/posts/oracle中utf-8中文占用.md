@@ -7,7 +7,7 @@ type: "post"
 tags: ["blog"]
 ---
 
-# Oracle中utf 8中文占用!
+# Oracle中utf 8中文占用
 
 ## 储存原理
 UTF-8 是一种可变长 Unicode 编码：
