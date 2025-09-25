@@ -46,6 +46,7 @@
         </div>
         {{ end }}
     </div>
+    {{ partial "utterances.html" . }}
 
     <div class="prev-next">
         {{ if eq .Site.Params.TogglePreviousAndNextButtons "true" }}
