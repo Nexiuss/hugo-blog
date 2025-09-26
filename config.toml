@@ -46,12 +46,6 @@ pygmentsStyle = "monokai"
     {name = "email", url = "mailto:nexiusssunny@gmail.com"}
   ]
   metaKeywords = ["blog", "gokarna", "hugo"]
-  ## 配置 utteranc评论,教程参考 https://utteranc.es/
-  [utteranc]
-    enable = true
-    repo = "nexiuss/utteranc"
-    issueTerm = "pathname"
-    theme = "github-light"
 
 [menu]
   [[menu.main]]
