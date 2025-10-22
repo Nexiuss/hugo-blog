@@ -5,11 +5,12 @@
     <style>
         :root {
             --accent-color: {{ .Site.Params.AccentColor | default "#FF4D4D" }};
+            --font-size: {{ .Site.Params.FontSize | default "1.1rem" }};
         }
     </style>
 
-    {{ $title := .Title | default .Site.Title }}
-    {{ $description := .Description | default .Site.Params.Description }}
+    {{ $title := .Title | markdownify | default .Site.Title }}
+    {{ $description := ((.Description | default (.Summary | default .Content) | default .Site.Params.Description) | plainify | truncate 160) }}
     {{ $image := .Params.image | default (.Scratch.Get "avatarImgSrc") }}
     {{ $siteKeywords := .Site.Params.MetaKeywords | default (slice) }}
     {{ $postKeywords := .Params.tags | default (slice) }}
