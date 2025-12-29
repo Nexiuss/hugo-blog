@@ -8,9 +8,19 @@ tags: ["blog","AltStore","IOS","ipa","MacOS","自签名","签名","证书"]
 ---
 
 # AltStore 使用说明(MacOS)
-## 为什么要使用自签名
-虽然小鸡在每次失效后都及时更新包到线上，但因为签名导致应用ID的变化，使得用户在重新安装小鸡后还需要重新下载之前下载过的游戏，一些设置也无法保留。
-使用自签名的方式安装到手机上的包将会有7天的有效期，即使过期了，重新签名安装后之前下载的游戏和存档都会得到保留，不用再重新下载。因此，小鸡推荐大家使用自签名的方式来安装小鸡模拟器。
+## 一、引言
+对于希望在 iOS 设备上使用源阅读 App（如通过 RSS、OPML 订阅各类资讯源）的用户，由于 App Store 审核政策限制，许多功能强大的第三方源阅读工具无法上架。AltStore 提供了一种安全、可靠的侧载方式，让用户能够安装这些未上架的应用。
+本指南将详细介绍如何在 Mac（苹果芯片）上安装和配置 AltStore，然后使用它来侧载一个名为 “NetNewsWire” 的开源源阅读 App。
+
+## 二、准备工作
+在开始之前，请确保你已准备好以下内容：
+1. 一台运行 macOS 的电脑：本指南以搭载苹果芯片（M 系列）的 Mac 为例。
+2. 一部 iPhone 或 iPad：运行 iOS 12.2 或更高版本。
+3. 一个苹果开发者账号：
+   - 免费账号：可以使用，但是每 7 天需要重新签名一次应用。
+   - 付费开发者账号 ($99 / 年)：推荐，签名后的应用有效期为一年，且无需频繁连接电脑。
+4. 网络连接：确保你的 Mac 和 iOS 设备连接到同一个 Wi-Fi 网络。
+5. 数据线：用于首次将 iOS 设备连接到 Mac 进行配对。
 
 ## 自签名的步骤
 ### 一、安装AltServer
@@ -59,20 +69,10 @@ tags: ["blog","AltStore","IOS","ipa","MacOS","自签名","签名","证书"]
 
 ### 六、Sideload 应用（安装自定义IPA）
 1. 前提条件：电脑端运行“AltServer”与“邮件”，且手机与电脑处于同一网络环境。
-2. 安装小鸡模拟器IPA：
-    - 用带下载功能的浏览器（如QQ浏览器）访问[小鸡模拟器官网](https://www.xiaoji001.com/altstore/resource/mob/5.png)。
-    - 若显示移动界面，在QQ浏览器设置中→“网页”→“浏览器UA标识”选择“电脑”，刷新页面。
-      - 浏览器UA设置截图：![UA标识设置界面](https://www.xiaoji001.com/altstore/resource/mob/5.png)
-    - 点击“iOS下载”→“安装包下载”，等待ipa文件（xiaoji_org.ipa，约76.3MB）下载完成。
-      - 官网下载界面截图：![小鸡模拟器下载页](https://www.xiaoji001.com/altstore/resource/mob/6.png)
-      - IPA下载弹窗截图：![IPA下载提示](https://www.xiaoji001.com/altstore/index.mac.html IPA下载截图位置)
+2. 从网站下载ipa
 3. 安装IPA文件：
-    - 在下载列表中找到小鸡IPA文件，进入文件预览，点击右下角“发送”→“其他应用”。
-      - 文件发送截图：![IPA文件发送界面](https://www.xiaoji001.com/altstore/resource/mob/7.png)
+    - 在下载列表中找到IPA文件，进入文件预览，点击右下角“发送”→“其他应用”。
     - 在应用列表中选择“AltStore”，等待安装完成（可在AltStore的“My Apps”中查看）。
-      - 应用选择截图：![选择AltStore界面](https://www.xiaoji001.com/altstore/resource/mob/8.png)
-      - 安装完成截图：![My Apps界面](https://www.xiaoji001.com/altstore/resource/mob/9.png)
-
 ### 七、有效期刷新
 1. 自签名应用有效期为7天，需在过期前刷新证书。
 2. 操作步骤：
